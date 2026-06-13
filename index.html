@@ -85,6 +85,11 @@
 
     <!-- ============ HERO ============ -->
     <section class="section_hero" data-theme-section="light">
+      <div class="aurora is--hero" aria-hidden="true">
+        <div class="aurora__inner"></div>
+        <div class="aurora__inner is--left"></div>
+      </div>
+
       <div class="hero-glow hero-glow--1" aria-hidden="true"></div>
       <div class="hero-glow hero-glow--2" aria-hidden="true"></div>
       <div class="hero-ring hero-ring--1" aria-hidden="true"></div>
@@ -312,6 +317,219 @@
       </div>
     </section>
 
+    <!-- ============ THE ORBIT (placement journey) ============ -->
+    <section class="section_orbit" id="orbit" data-theme-section="light">
+      <div class="aurora" aria-hidden="true">
+        <div class="aurora__inner"></div>
+        <div class="aurora__inner is--left"></div>
+      </div>
+
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow" data-split>The placement journey</p>
+          <h2 class="h2" data-split>Your product, <em>in orbit.</em></h2>
+          <p class="section-sub" data-split>
+            The same path every placement runs &mdash; from first sample to standing
+            reorder. Open any stage to see what happens, and what it&rsquo;s wired to.
+          </p>
+        </div>
+
+        <div class="orbit" data-orbit data-reveal>
+          <div class="orbit__stage">
+            <div class="orbit__core" aria-hidden="true"><span>V</span></div>
+            <div class="orbit__ring" aria-hidden="true"></div>
+            <div class="orbit__ring is--inner" aria-hidden="true"></div>
+
+            <!-- 01 Sample -->
+            <div class="orbit__node" data-id="1" data-related="2">
+              <div class="orbit__hit" role="button" tabindex="0" aria-label="Stage: Sample">
+                <span class="orbit__halo" aria-hidden="true"></span>
+                <span class="orbit__dot" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg>
+                </span>
+                <span class="orbit__label">Sample</span>
+                <div class="orbit__card">
+                  <div class="orbit__card-top">
+                    <span class="orbit__badge is--done">Done</span>
+                    <span class="orbit__step">Day 1</span>
+                  </div>
+                  <h3>Sample</h3>
+                  <p>You send the product. We taste it, price it, and decide if we can
+                  genuinely sell it &mdash; one 10-minute call, not a workshop.</p>
+                  <div class="orbit__meter">
+                    <div class="orbit__meter-row"><span>Momentum</span><b>100%</b></div>
+                    <div class="orbit__meter-bar"><div class="orbit__meter-fill" style="width:100%"></div></div>
+                  </div>
+                  <div class="orbit__links">
+                    <div class="orbit__links-label">Connected steps</div>
+                    <div class="orbit__links-row">
+                      <button type="button" class="orbit__chip" data-goto="2">Materials <i>&rarr;</i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 02 Materials -->
+            <div class="orbit__node" data-id="2" data-related="1,3">
+              <div class="orbit__hit" role="button" tabindex="0" aria-label="Stage: Materials">
+                <span class="orbit__halo" aria-hidden="true"></span>
+                <span class="orbit__dot" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><rect x="4" y="3" width="14" height="18" rx="1.5"/><path d="M8 8h6M8 12h6M8 16h4"/></svg>
+                </span>
+                <span class="orbit__label">Materials</span>
+                <div class="orbit__card">
+                  <div class="orbit__card-top">
+                    <span class="orbit__badge is--done">Done</span>
+                    <span class="orbit__step">Week 1</span>
+                  </div>
+                  <h3>Materials</h3>
+                  <p>Catalog, price sheet, pitch deck &mdash; creative-grade work most reps
+                  never produce. Your brand walks in looking as big as it deserves.</p>
+                  <div class="orbit__meter">
+                    <div class="orbit__meter-row"><span>Momentum</span><b>92%</b></div>
+                    <div class="orbit__meter-bar"><div class="orbit__meter-fill" style="width:92%"></div></div>
+                  </div>
+                  <div class="orbit__links">
+                    <div class="orbit__links-label">Connected steps</div>
+                    <div class="orbit__links-row">
+                      <button type="button" class="orbit__chip" data-goto="1">Sample <i>&rarr;</i></button>
+                      <button type="button" class="orbit__chip" data-goto="3">Pitch <i>&rarr;</i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 03 Pitch -->
+            <div class="orbit__node" data-id="3" data-related="2,4">
+              <div class="orbit__hit" role="button" tabindex="0" aria-label="Stage: Pitch">
+                <span class="orbit__halo" aria-hidden="true"></span>
+                <span class="orbit__dot" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                </span>
+                <span class="orbit__label">Pitch</span>
+                <div class="orbit__card">
+                  <div class="orbit__card-top">
+                    <span class="orbit__badge is--motion">In motion</span>
+                    <span class="orbit__step">Weeks 2&ndash;6</span>
+                  </div>
+                  <h3>Pitch</h3>
+                  <p>Boutiques, caf&eacute;s, hotels, HR teams &mdash; handpicked and non-competing.
+                  Samples in hand, followed up until there&rsquo;s a yes or a no.</p>
+                  <div class="orbit__meter">
+                    <div class="orbit__meter-row"><span>Momentum</span><b>74%</b></div>
+                    <div class="orbit__meter-bar"><div class="orbit__meter-fill" style="width:74%"></div></div>
+                  </div>
+                  <div class="orbit__links">
+                    <div class="orbit__links-label">Connected steps</div>
+                    <div class="orbit__links-row">
+                      <button type="button" class="orbit__chip" data-goto="2">Materials <i>&rarr;</i></button>
+                      <button type="button" class="orbit__chip" data-goto="4">Order <i>&rarr;</i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 04 Order -->
+            <div class="orbit__node" data-id="4" data-related="3,5">
+              <div class="orbit__hit" role="button" tabindex="0" aria-label="Stage: Order">
+                <span class="orbit__halo" aria-hidden="true"></span>
+                <span class="orbit__dot" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5.5"/></svg>
+                </span>
+                <span class="orbit__label">Order</span>
+                <div class="orbit__card">
+                  <div class="orbit__card-top">
+                    <span class="orbit__badge is--motion">In motion</span>
+                    <span class="orbit__step">On yes</span>
+                  </div>
+                  <h3>Order</h3>
+                  <p>The buyer says yes. The first PO lands &mdash; with margins agreed in
+                  writing before we ever pitched, never out of your pocket.</p>
+                  <div class="orbit__meter">
+                    <div class="orbit__meter-row"><span>Momentum</span><b>58%</b></div>
+                    <div class="orbit__meter-bar"><div class="orbit__meter-fill" style="width:58%"></div></div>
+                  </div>
+                  <div class="orbit__links">
+                    <div class="orbit__links-label">Connected steps</div>
+                    <div class="orbit__links-row">
+                      <button type="button" class="orbit__chip" data-goto="3">Pitch <i>&rarr;</i></button>
+                      <button type="button" class="orbit__chip" data-goto="5">Restock <i>&rarr;</i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 05 Restock -->
+            <div class="orbit__node" data-id="5" data-related="4,6">
+              <div class="orbit__hit" role="button" tabindex="0" aria-label="Stage: Restock">
+                <span class="orbit__halo" aria-hidden="true"></span>
+                <span class="orbit__dot" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>
+                </span>
+                <span class="orbit__label">Restock</span>
+                <div class="orbit__card">
+                  <div class="orbit__card-top">
+                    <span class="orbit__badge is--next">Next</span>
+                    <span class="orbit__step">Within 7 days</span>
+                  </div>
+                  <h3>Restock</h3>
+                  <p>An empty shelf is lost money &mdash; we treat it that way. Reorders
+                  ship within a week, before the shelf ever runs dry.</p>
+                  <div class="orbit__meter">
+                    <div class="orbit__meter-row"><span>Momentum</span><b>40%</b></div>
+                    <div class="orbit__meter-bar"><div class="orbit__meter-fill" style="width:40%"></div></div>
+                  </div>
+                  <div class="orbit__links">
+                    <div class="orbit__links-label">Connected steps</div>
+                    <div class="orbit__links-row">
+                      <button type="button" class="orbit__chip" data-goto="4">Order <i>&rarr;</i></button>
+                      <button type="button" class="orbit__chip" data-goto="6">Reorder <i>&rarr;</i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 06 Reorder -->
+            <div class="orbit__node" data-id="6" data-related="5">
+              <div class="orbit__hit" role="button" tabindex="0" aria-label="Stage: Reorder">
+                <span class="orbit__halo" aria-hidden="true"></span>
+                <span class="orbit__dot" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                </span>
+                <span class="orbit__label">Reorder</span>
+                <div class="orbit__card">
+                  <div class="orbit__card-top">
+                    <span class="orbit__badge is--next">Next</span>
+                    <span class="orbit__step">Ongoing</span>
+                  </div>
+                  <h3>Reorder</h3>
+                  <p>The shelf earns its place again. Standing reorders are where a single
+                  placement quietly becomes a partnership.</p>
+                  <div class="orbit__meter">
+                    <div class="orbit__meter-row"><span>Momentum</span><b>24%</b></div>
+                    <div class="orbit__meter-bar"><div class="orbit__meter-fill" style="width:24%"></div></div>
+                  </div>
+                  <div class="orbit__links">
+                    <div class="orbit__links-label">Connected steps</div>
+                    <div class="orbit__links-row">
+                      <button type="button" class="orbit__chip" data-goto="5">Restock <i>&rarr;</i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="orbit__hint">Click a node &middot; the orbit turns on its own</p>
+      </div>
+    </section>
+
     <!-- ============ FOR FOUNDERS / PROCESS ============ -->
     <section class="section_process" id="process" data-theme-section="dark">
       <div class="container">
@@ -433,6 +651,49 @@
             <li data-reveal><strong>Restocks within a week.</strong><span>An empty shelf is lost money. We treat it that way.</span></li>
             <li data-reveal><strong>One accountable human.</strong><span>No tickets, no bots. A name, a number, a person who shows up.</span></li>
           </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STATEMENT BAND (rotating headline) ============ -->
+    <section class="section_statement" data-theme-section="light">
+      <div class="aurora" aria-hidden="true">
+        <div class="aurora__inner"></div>
+        <div class="aurora__inner is--left"></div>
+      </div>
+
+      <div class="container">
+        <div class="statement-wrap">
+          <p class="eyebrow" data-split>The promise</p>
+          <h2 class="statement-h2 will-anim">
+            Your product, finally
+            <span class="rotator" data-rotator aria-hidden="true">
+              <span class="rotator__word">on shelves.</span>
+              <span class="rotator__word">restocked.</span>
+              <span class="rotator__word">reordered.</span>
+              <span class="rotator__word">discovered.</span>
+              <span class="rotator__word">sold.</span>
+            </span>
+            <span class="visually-hidden">on shelves, restocked, reordered, discovered, sold.</span>
+          </h2>
+          <p class="statement-sub will-anim">
+            One accountable human. Commission-only. &#8377;0 upfront, ever &mdash;
+            we sell it like it&rsquo;s ours.
+          </p>
+          <div class="statement-ctas will-anim">
+            <a href="mailto:sapehiaofficial@gmail.com?subject=Get%20my%20brand%20placed" class="glass-btn" data-contact-trigger>
+              <span class="glass-btn__layer glass-btn__distort" aria-hidden="true"></span>
+              <span class="glass-btn__layer glass-btn__tint" aria-hidden="true"></span>
+              <span class="glass-btn__layer glass-btn__shine" aria-hidden="true"></span>
+              <span class="glass-btn__label">Get Your Brand Placed <i>&rarr;</i></span>
+            </a>
+            <a href="#ledger" class="btn-start" data-scroll-to>
+              <span class="btn-start__text">See the Math</span>
+              <span class="btn-start__chip" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+              </span>
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -648,6 +909,24 @@
       </div>
     </div>
   </div>
+
+  <!-- SVG filter for the liquid-glass CTA -->
+  <svg class="glass-svg" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
+    <filter id="glass-distortion" x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox">
+      <feTurbulence type="fractalNoise" baseFrequency="0.001 0.005" numOctaves="1" seed="17" result="turbulence"/>
+      <feComponentTransfer in="turbulence" result="mapped">
+        <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5"/>
+        <feFuncG type="gamma" amplitude="0" exponent="1" offset="0"/>
+        <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5"/>
+      </feComponentTransfer>
+      <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap"/>
+      <feSpecularLighting in="softMap" surfaceScale="5" specularConstant="1" specularExponent="100" lighting-color="white" result="specLight">
+        <fePointLight x="-200" y="-200" z="300"/>
+      </feSpecularLighting>
+      <feComposite in="specLight" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="litImage"/>
+      <feDisplacementMap in="SourceGraphic" in2="softMap" scale="120" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </svg>
 
   <!-- GSAP -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>

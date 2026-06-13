@@ -20,6 +20,8 @@
     initMobileMenu(null);
     initAnchors(null);
     initContactModal(null);
+    initOrbit();
+    initRotator();
     return;
   }
 
@@ -229,6 +231,8 @@
   initMobileMenu(lenis);
   initAnchors(lenis);
   initContactModal(lenis);
+  initOrbit();
+  initRotator();
 
   /* ============================================================
      Shared interaction helpers
@@ -389,5 +393,182 @@
         }
       }
     });
+  }
+
+  /* ============================================================
+     ORBIT — placement journey (ported from radial-orbital-timeline)
+     Auto-rotates; click a node to open its card and pause the spin;
+     related nodes glow. Owns transform + opacity on each node so it
+     stays independent of GSAP.
+     ============================================================ */
+  function initOrbit() {
+    var root = document.querySelector("[data-orbit]");
+    if (!root) return;
+    var stage = root.querySelector(".orbit__stage");
+    var nodes = Array.prototype.slice.call(root.querySelectorAll(".orbit__node"));
+    if (!stage || !nodes.length) return;
+
+    var total = nodes.length;
+    var angle = 0;
+    var auto = true;
+    var openId = null;
+    var radius = 0;
+
+    function measure() {
+      var r = stage.getBoundingClientRect();
+      radius = Math.min(r.width, r.height) * 0.40;
+    }
+
+    function position() {
+      for (var i = 0; i < total; i++) {
+        var node = nodes[i];
+        var a = ((i / total) * 360 + angle) % 360;
+        var rad = (a * Math.PI) / 180;
+        var x = radius * Math.cos(rad);
+        var y = radius * Math.sin(rad);
+        var open = node.classList.contains("is--open");
+        var z = Math.round(100 + 50 * Math.cos(rad));
+        var op = Math.max(0.45, Math.min(1, 0.45 + 0.55 * ((1 + Math.sin(rad)) / 2)));
+        node.style.transform = "translate(-50%,-50%) translate(" + x.toFixed(1) + "px," + y.toFixed(1) + "px)";
+        node.style.zIndex = open ? 300 : z;
+        node.style.opacity = open ? 1 : op;
+      }
+    }
+
+    function relatedIds(node) {
+      return (node.getAttribute("data-related") || "")
+        .split(",").map(function (s) { return s.trim(); }).filter(Boolean);
+    }
+
+    var settleTimer = null;
+    function addSettle() {
+      nodes.forEach(function (n) { n.classList.add("is--settling"); });
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(removeSettle, 820);
+    }
+    function removeSettle() {
+      clearTimeout(settleTimer); settleTimer = null;
+      nodes.forEach(function (n) { n.classList.remove("is--settling"); });
+    }
+
+    function clearOpen() {
+      nodes.forEach(function (n) { n.classList.remove("is--open", "is--related"); });
+      openId = null;
+      auto = true;
+      removeSettle();           /* drop the transition so the resuming spin stays smooth */
+    }
+
+    function openNode(node) {
+      var id = node.getAttribute("data-id");
+      if (openId === id) { clearOpen(); position(); return; }
+      nodes.forEach(function (n) { n.classList.remove("is--open", "is--related"); });
+      node.classList.add("is--open");
+      openId = id;
+      auto = false;
+      var rel = relatedIds(node);
+      nodes.forEach(function (n) {
+        if (rel.indexOf(n.getAttribute("data-id")) >= 0) n.classList.add("is--related");
+      });
+      /* swing the open node to the top (270deg) so its card drops into the centre */
+      var idx = nodes.indexOf(node);
+      angle = 270 - (idx / total) * 360;
+      addSettle();              /* animate the swing; spin is paused (auto=false) */
+      position();
+    }
+
+    nodes.forEach(function (node) {
+      var hit = node.querySelector(".orbit__hit") || node;
+      hit.addEventListener("click", function (e) {
+        e.stopPropagation();
+        openNode(node);
+      });
+      hit.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openNode(node); }
+      });
+      var card = node.querySelector(".orbit__card");
+      if (card) card.addEventListener("click", function (e) { e.stopPropagation(); });
+      node.querySelectorAll("[data-goto]").forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          var target = nodes.filter(function (n) {
+            return n.getAttribute("data-id") === btn.getAttribute("data-goto");
+          })[0];
+          if (target) openNode(target);
+        });
+      });
+    });
+
+    stage.addEventListener("click", function (e) {
+      if (e.target === stage ||
+          e.target.classList.contains("orbit__ring") ||
+          e.target.classList.contains("orbit__core")) {
+        clearOpen();
+        position();
+      }
+    });
+
+    /* ---- smooth spin: rAF with delta-time, paused when off-screen ---- */
+    var rafId = null;
+    var last = 0;
+    var SPEED = 5; /* degrees per second */
+
+    function frame(now) {
+      if (!last) last = now;
+      var dt = (now - last) / 1000;
+      last = now;
+      if (auto && dt < 0.1) {           /* skip huge gaps (e.g. tab refocus) */
+        angle = (angle + SPEED * dt) % 360;
+        position();
+      }
+      rafId = requestAnimationFrame(frame);
+    }
+    function startSpin() {
+      if (rafId === null && !reduceMotion) { last = 0; rafId = requestAnimationFrame(frame); }
+    }
+    function stopSpin() {
+      if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+    }
+
+    measure();
+    position();
+    /* keep the radius correct through font/layout settle and any resize */
+    if ("ResizeObserver" in window) {
+      new ResizeObserver(function () { measure(); position(); }).observe(stage);
+    } else {
+      window.addEventListener("resize", function () { measure(); position(); });
+    }
+
+    /* only run the loop while the orbit is actually on-screen */
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { e.isIntersecting ? startSpin() : stopSpin(); });
+      }, { threshold: 0.04 }).observe(stage);
+    } else {
+      startSpin();
+    }
+  }
+
+  /* ============================================================
+     ROTATOR — rotating headline word (ported from animated-hero)
+     ============================================================ */
+  function initRotator() {
+    var rot = document.querySelector("[data-rotator]");
+    if (!rot) return;
+    var words = Array.prototype.slice.call(rot.querySelectorAll(".rotator__word"));
+    if (!words.length) return;
+
+    var i = 0;
+    words[0].classList.add("is--active");
+    if (reduceMotion || words.length < 2) return;
+
+    setInterval(function () {
+      var prev = i;
+      i = (i + 1) % words.length;
+      words[prev].classList.remove("is--active");
+      words[prev].classList.add("is--prev");
+      words[i].classList.remove("is--prev");
+      words[i].classList.add("is--active");
+      setTimeout(function () { words[prev].classList.remove("is--prev"); }, 650);
+    }, 2200);
   }
 })();

@@ -108,6 +108,14 @@ section { position: relative; }
 [data-split] { visibility: hidden; }
 .will-anim { opacity: 0; }
 
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0);
+  white-space: nowrap; border: 0;
+}
+
 /* ============================================================
    LOADER
    ============================================================ */
@@ -1071,3 +1079,368 @@ body.menu-open .nav-mobile__link:nth-child(6) { transition-delay: .45s; }
 html.no-anim [data-split],
 html.no-anim .will-anim { visibility: visible !important; opacity: 1 !important; transform: none !important; }
 html.no-anim .loader { display: none !important; }
+
+/* ============================================================
+   AURORA ATMOSPHERE   (ported from "aurora-background")
+   Re-skinned to sage / gold / green — soft, blurred, printed.
+   Lives behind dark-green sections like an extension of the
+   hero glows. No neon, no rainbow.
+   ============================================================ */
+.aurora { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+/* Soft radial blobs that drift via TRANSFORM only (GPU-composited, no
+   per-frame repaint) — replaces the old blurred background-position pan,
+   which was the main cause of scroll jank. */
+.aurora__inner {
+  position: absolute; inset: -25%;
+  opacity: .55;
+  background:
+    radial-gradient(38% 50% at 76% 18%, rgba(194,162,86,.42), transparent 60%),
+    radial-gradient(46% 56% at 22% 30%, rgba(168,191,165,.40), transparent 62%),
+    radial-gradient(52% 60% at 58% 86%, rgba(168,191,165,.28), transparent 66%);
+  filter: blur(14px);
+  transform: translate3d(0,0,0);
+  will-change: transform;
+  animation: aurora-drift 28s ease-in-out infinite alternate;
+}
+.aurora__inner.is--left {
+  opacity: .42;
+  background:
+    radial-gradient(46% 56% at 18% 76%, rgba(194,162,86,.30), transparent 62%),
+    radial-gradient(52% 60% at 82% 58%, rgba(168,191,165,.32), transparent 64%);
+  animation: aurora-drift-2 36s ease-in-out infinite alternate;
+}
+@keyframes aurora-drift {
+  from { transform: translate3d(-3%, -2%, 0) scale(1); }
+  to   { transform: translate3d(4%,  3%, 0) scale(1.08); }
+}
+@keyframes aurora-drift-2 {
+  from { transform: translate3d(3%,  2%, 0) scale(1.06); }
+  to   { transform: translate3d(-4%, -3%, 0) scale(1); }
+}
+/* hero already carries its own glows/rings — keep the aurora subtle here */
+.aurora.is--hero .aurora__inner { opacity: .34; }
+.aurora.is--hero .aurora__inner.is--left { opacity: .26; }
+
+/* ============================================================
+   ORBIT — placement journey   (ported from "radial-orbital-timeline")
+   Deep-green stage, gold/ivory/green nodes, ledger-style cards.
+   ============================================================ */
+.section_orbit {
+  background:
+    radial-gradient(90% 80% at 80% 6%, rgba(194,162,86,.10), transparent 55%),
+    linear-gradient(168deg, var(--green) 0%, var(--green-deep) 55%, var(--green-ink) 100%);
+  color: var(--ivory);
+  padding: 8.5em 0 7.5em;
+  overflow: hidden;
+}
+.section_orbit .section-head { position: relative; z-index: 3; }
+.section_orbit .h2 { color: var(--ivory); }
+.section_orbit .section-sub { color: var(--ivory-70); }
+.section_orbit .eyebrow { color: var(--ivory-70); }
+
+.orbit {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1em;
+}
+.orbit__stage {
+  position: relative;
+  width: 42em; height: 42em;
+  max-width: 86vw; max-height: 86vw;
+  cursor: pointer;
+}
+
+/* glowing gold core */
+.orbit__core {
+  position: absolute; top: 50%; left: 50%;
+  width: 4.6em; height: 4.6em;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 32%, var(--gold) 0%, #9a7d3a 60%, var(--green-deep) 130%);
+  display: grid; place-items: center;
+  z-index: 10;
+  box-shadow: 0 0 2.4em rgba(194,162,86,.35);
+  animation: orbit-pulse 2.6s var(--ease) infinite;
+}
+.orbit__core::before,
+.orbit__core::after {
+  content: ""; position: absolute; inset: -.55em;
+  border: 1px solid var(--ivory-15); border-radius: 50%;
+  animation: orbit-ping 2.8s cubic-bezier(0,0,.2,1) infinite;
+}
+.orbit__core::after { inset: -1.2em; animation-delay: .7s; opacity: .6; }
+.orbit__core span {
+  font: 500 1.5em/1 var(--font-serif);
+  color: var(--green-ink);
+}
+@keyframes orbit-pulse {
+  0%, 100% { box-shadow: 0 0 2.4em rgba(194,162,86,.35); }
+  50%      { box-shadow: 0 0 3.4em rgba(194,162,86,.6); }
+}
+@keyframes orbit-ping {
+  0%   { transform: scale(.9); opacity: .7; }
+  80%, 100% { transform: scale(1.9); opacity: 0; }
+}
+
+/* faint guide ring */
+.orbit__ring {
+  position: absolute; top: 50%; left: 50%;
+  width: 80%; height: 80%;
+  transform: translate(-50%, -50%);
+  border: 1px solid var(--ivory-15); border-radius: 50%;
+  pointer-events: none;
+}
+.orbit__ring.is--inner { width: 80%; height: 80%; border-color: rgba(194,162,86,.16); }
+
+/* nodes — position transform is written every frame by rAF, so NO
+   transition by default (a transition here makes the spin stutter).
+   The .is--settling class is added only for the click "swing to top". */
+.orbit__node {
+  position: absolute; top: 50%; left: 50%;
+  will-change: transform, opacity;
+}
+.orbit__node.is--settling { transition: transform .8s var(--ease), opacity .5s var(--ease); }
+.orbit__hit {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center;
+  cursor: pointer;
+}
+.orbit__halo {
+  position: absolute; top: 50%; left: 50%;
+  width: 3.4em; height: 3.4em;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(247,244,236,.22) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity .4s var(--ease);
+}
+.orbit__node.is--related .orbit__halo { opacity: 1; animation: orbit-pulse 1.6s ease-in-out infinite; }
+.orbit__dot {
+  position: relative;
+  width: 2.7em; height: 2.7em;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--green-ink);
+  color: var(--ivory);
+  border: 1.5px solid var(--ivory-40);
+  transition: transform .4s var(--ease), background-color .4s var(--ease),
+              color .4s var(--ease), border-color .4s var(--ease),
+              box-shadow .4s var(--ease);
+}
+.orbit__dot svg { width: 1.15em; height: 1.15em; stroke: currentColor; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.orbit__node.is--related .orbit__dot { background: var(--sage); color: var(--green-ink); border-color: var(--sage); }
+.orbit__node.is--open .orbit__dot {
+  background: var(--ivory); color: var(--green); border-color: var(--gold);
+  transform: scale(1.4);
+  box-shadow: 0 0 1.6em rgba(247,244,236,.4);
+}
+/* smooth hover pop-out — feels interactive without disturbing the orbit */
+@media (hover: hover) and (pointer: fine) {
+  .orbit__node:not(.is--open) .orbit__hit:hover .orbit__dot {
+    transform: scale(1.22);
+    border-color: var(--gold);
+    color: var(--ivory);
+    box-shadow: 0 .4em 1.2em -.2em rgba(16,42,32,.5), 0 0 1.1em rgba(194,162,86,.4);
+  }
+  .orbit__node:not(.is--open) .orbit__hit:hover .orbit__label {
+    color: var(--ivory);
+    transform: translateY(.15em);
+  }
+  .orbit__node:not(.is--open) .orbit__hit:hover .orbit__halo { opacity: .85; }
+}
+.orbit__label {
+  margin-top: .8em;
+  font: 500 .8em/1 var(--font-serif);
+  letter-spacing: .02em;
+  color: var(--ivory-70);
+  white-space: nowrap;
+  transition: color .4s var(--ease), transform .4s var(--ease);
+}
+.orbit__node.is--open .orbit__label { color: var(--ivory); transform: scale(1.12); }
+
+/* expanded card — built like the ledger card */
+.orbit__card {
+  position: absolute; top: 4.4em; left: 50%;
+  transform: translateX(-50%) translateY(.5em);
+  width: 19em;
+  background: var(--ivory);
+  color: var(--ink);
+  border-radius: .8em;
+  padding: 1.5em 1.6em 1.4em;
+  box-shadow: 0 1.8em 3.6em -1.4em rgba(16,42,32,.65);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .4s var(--ease), transform .4s var(--ease), visibility 0s linear .4s;
+  z-index: 30;
+}
+.orbit__node.is--open .orbit__card {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+  transition: opacity .45s var(--ease), transform .45s var(--ease);
+}
+.orbit__card::before {
+  content: ""; position: absolute; left: 50%; top: -.7em;
+  width: 1px; height: .7em; background: var(--gold);
+  transform: translateX(-50%);
+}
+.orbit__card-top { display: flex; align-items: center; justify-content: space-between; gap: 1em; }
+.orbit__badge {
+  font: 600 .58em/1 var(--font-sans);
+  letter-spacing: .2em; text-transform: uppercase;
+  padding: .55em .7em; border-radius: .35em;
+  border: 1px solid;
+}
+.orbit__badge.is--done { color: var(--ivory); background: var(--green); border-color: var(--green); }
+.orbit__badge.is--motion { color: var(--green); background: rgba(168,191,165,.3); border-color: var(--green); }
+.orbit__badge.is--next { color: var(--ink-55); background: transparent; border-color: var(--ink-15); }
+.orbit__step {
+  font: 600 .62em/1 var(--font-sans);
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--ink-55);
+}
+.orbit__card h3 { font: 500 1.25em/1.2 var(--font-serif); color: var(--green); margin: .8em 0 .4em; }
+.orbit__card p { font-size: .82em; color: var(--ink-75); }
+.orbit__meter { margin-top: 1.2em; padding-top: 1em; border-top: 1px solid rgba(34,38,42,.1); }
+.orbit__meter-row {
+  display: flex; align-items: center; justify-content: space-between;
+  font: 600 .62em/1 var(--font-sans);
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--ink-55); margin-bottom: .7em;
+}
+.orbit__meter-row b { color: var(--green); font-family: var(--font-sans); }
+.orbit__meter-bar { height: 3px; border-radius: 3px; background: rgba(34,38,42,.1); overflow: hidden; }
+.orbit__meter-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #9a7d3a, var(--gold)); }
+.orbit__links { margin-top: 1.2em; padding-top: 1em; border-top: 1px solid rgba(34,38,42,.1); }
+.orbit__links-label {
+  font: 600 .6em/1 var(--font-sans);
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--ink-55); margin-bottom: .85em;
+}
+.orbit__links-row { display: flex; flex-wrap: wrap; gap: .5em; }
+.orbit__chip {
+  display: inline-flex; align-items: center; gap: .4em;
+  font: 500 .72em/1 var(--font-sans);
+  color: var(--green);
+  border: 1px solid var(--gold-30);
+  border-radius: .35em;
+  padding: .55em .75em;
+  transition: background-color .3s var(--ease), border-color .3s var(--ease);
+}
+.orbit__chip:hover { background: rgba(194,162,86,.12); border-color: var(--gold); }
+.orbit__chip i { font-style: normal; color: var(--gold); }
+.orbit__hint {
+  position: relative; z-index: 3;
+  text-align: center;
+  margin-top: 2.4em;
+  font: 600 .66em/1 var(--font-sans);
+  letter-spacing: .26em; text-transform: uppercase;
+  color: var(--ivory-40);
+}
+
+/* ============================================================
+   STATEMENT BAND — rotating headline   (ported from "animated-hero")
+   + liquid-glass CTA + get-started button
+   ============================================================ */
+.section_statement {
+  background:
+    radial-gradient(80% 100% at 50% 0%, rgba(194,162,86,.10), transparent 58%),
+    linear-gradient(180deg, var(--green-deep) 0%, var(--green-ink) 100%);
+  color: var(--ivory);
+  padding: 8em 0;
+  overflow: hidden;
+}
+.statement-wrap { position: relative; z-index: 2; text-align: center; max-width: 30em; margin-inline: auto; }
+.statement-wrap .eyebrow { color: var(--ivory-70); justify-content: center; }
+.statement-h2 { font: 500 3.6em/1.12 var(--font-serif); color: var(--ivory); letter-spacing: -.012em; }
+.rotator {
+  position: relative; display: block;
+  height: 1.18em; margin-top: .12em;
+  overflow: hidden;
+}
+.rotator__word {
+  position: absolute; left: 0; right: 0;
+  color: var(--gold);
+  opacity: 0; transform: translateY(.7em);
+  transition: opacity .6s var(--ease), transform .6s var(--ease);
+  will-change: transform, opacity;
+}
+.rotator__word.is--active { opacity: 1; transform: translateY(0); }
+.rotator__word.is--prev { opacity: 0; transform: translateY(-.7em); }
+.statement-sub { margin-top: 1.6em; color: var(--ivory-70); font-size: 1.05em; }
+.statement-ctas {
+  display: flex; align-items: center; justify-content: center;
+  gap: 1.2em; margin-top: 2.8em; flex-wrap: wrap;
+}
+
+/* Liquid glass button */
+.glass-btn {
+  position: relative; isolation: isolate;
+  display: inline-flex; align-items: center; gap: .8em;
+  padding: 1.15em 2.3em;
+  border-radius: 10em; overflow: hidden;
+  color: var(--ivory);
+  font: 500 .95em/1 var(--font-sans);
+  box-shadow: 0 6px 6px rgba(16,42,32,.22), 0 0 20px rgba(16,42,32,.12);
+  transition: transform .7s cubic-bezier(.175,.885,.32,2.2), box-shadow .5s var(--ease);
+}
+.glass-btn__layer { position: absolute; inset: 0; border-radius: inherit; }
+.glass-btn__distort { -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); filter: url(#glass-distortion); isolation: isolate; }
+.glass-btn__tint { background: rgba(247,244,236,.18); }
+.glass-btn__shine { box-shadow: inset 2px 2px 1px rgba(247,244,236,.5), inset -1px -1px 1px 1px rgba(247,244,236,.4); }
+.glass-btn__label { position: relative; z-index: 3; display: inline-flex; align-items: center; gap: .7em; transition: transform .7s cubic-bezier(.175,.885,.32,2.2); }
+.glass-btn__label i { font-style: normal; transition: transform .5s var(--ease); }
+.glass-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 14px rgba(16,42,32,.28), 0 0 26px rgba(194,162,86,.18); }
+.glass-btn:hover .glass-btn__label i { transform: translateX(.3em); }
+.glass-btn:active { transform: translateY(0) scale(.98); }
+
+/* Get-started button — expanding gold chevron */
+.btn-start {
+  position: relative;
+  display: inline-flex; align-items: center;
+  padding: 1.05em 1.7em 1.05em 1.9em;
+  border-radius: 10em; overflow: hidden;
+  background: rgba(247,244,236,.06);
+  border: 1px solid var(--ivory-15);
+  color: var(--ivory);
+  font: 500 .95em/1 var(--font-sans);
+}
+.btn-start__text { margin-right: 2.6em; transition: opacity .5s var(--ease); }
+.btn-start:hover .btn-start__text { opacity: 0; }
+.btn-start__chip {
+  position: absolute; right: .38em; top: .38em; bottom: .38em;
+  width: 2.5em;
+  display: grid; place-items: center;
+  border-radius: 10em;
+  background: var(--gold); color: var(--green-ink);
+  transition: width .5s var(--ease), transform .2s var(--ease);
+}
+.btn-start__chip svg { width: 1em; height: 1em; stroke: currentColor; stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.btn-start:hover .btn-start__chip { width: calc(100% - .76em); }
+.btn-start:active .btn-start__chip { transform: scale(.95); }
+
+/* ---------- Responsive (added components) ---------- */
+@media screen and (max-width: 991px) {
+  .section_orbit { padding: 6.5em 0 6em; }
+  .orbit__stage { width: 34em; height: 34em; }
+  .statement-h2 { font-size: 3em; }
+}
+@media screen and (max-width: 767px) {
+  .orbit__stage { width: 30em; height: 30em; }
+  .orbit__label { font-size: .9em; }
+  .orbit__card { width: 16em; }
+  .statement-h2 { font-size: 2.5em; }
+  .statement-ctas { flex-direction: column; align-items: stretch; }
+}
+@media screen and (max-width: 479px) {
+  .orbit__stage { width: 21em; height: 21em; }
+  .orbit__core { width: 3.6em; height: 3.6em; }
+  .orbit__dot { width: 2.3em; height: 2.3em; }
+  .orbit__card { width: 14em; }
+  .statement-h2 { font-size: 2.1em; }
+}
+
+/* no-anim / reduced-motion: keep orbit usable, drop the spin atmospherics */
+html.no-anim .aurora__inner { animation: none; }
+html.no-anim .orbit__core,
+html.no-anim .orbit__core::before,
+html.no-anim .orbit__core::after { animation: none; }
