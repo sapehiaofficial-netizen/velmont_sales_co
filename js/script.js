@@ -363,35 +363,81 @@
       if (e.key === "Escape" && isOpen()) closeModal();
     });
 
+    var submitBtn = form.querySelector(".contact-form__submit");
+    var btnText = form.querySelector(".btn__text");
+    var errorEl = modal.querySelector(".contact-form__error");
+    var sending = false;
+
+    function val(sel) {
+      var el = form.querySelector(sel);
+      return el ? el.value.trim() : "";
+    }
+
+    function showError(msg) {
+      if (!errorEl) return;
+      errorEl.textContent = msg;
+      errorEl.classList.add("is--visible");
+    }
+
+    function clearError() {
+      if (!errorEl) return;
+      errorEl.textContent = "";
+      errorEl.classList.remove("is--visible");
+    }
+
+    function setSending(on) {
+      sending = on;
+      if (submitBtn) submitBtn.disabled = on;
+      form.classList.toggle("is--sending", on);
+      if (btnText) btnText.textContent = on ? "Sending…" : "Send & Book";
+    }
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
+      if (sending) return;
+      clearError();
       if (!form.reportValidity()) return;
 
-      var val = function (sel) {
-        var el = form.querySelector(sel);
-        return el ? el.value.trim() : "";
+      var payload = {
+        name: val("#cf-name"),
+        email: val("#cf-email"),
+        company: val("#cf-company"),
+        phone: val("#cf-phone"),
+        message: val("#cf-message"),
+        company_website: val("#cf-company-website") // honeypot
       };
-      var name = val("#cf-name");
-      var company = val("#cf-company");
-      var subject = "Intro call — " + name + (company ? " (" + company + ")" : "");
-      var bodyTxt =
-        "Name: " + name +
-        "\nEmail: " + val("#cf-email") +
-        "\nBrand / business: " + company +
-        (val("#cf-phone") ? "\nPhone: " + val("#cf-phone") : "") +
-        (val("#cf-message") ? "\n\n" + val("#cf-message") : "") +
-        "\n\n— sent from velmont site";
 
-      window.location.href = "mailto:sapehiaofficial@gmail.com?subject=" +
-        encodeURIComponent(subject) + "&body=" + encodeURIComponent(bodyTxt);
+      setSending(true);
 
-      form.classList.add("is--hidden");
-      if (done) {
-        done.classList.add("is--visible");
-        if (animOk) {
-          gsap.fromTo(done, { y: 18, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8, ease: "power3.out" });
-        }
-      }
+      fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+        .then(function (res) {
+          return res.json().catch(function () { return {}; }).then(function (data) {
+            return { ok: res.ok && data.ok, data: data };
+          });
+        })
+        .then(function (result) {
+          if (!result.ok) {
+            throw new Error((result.data && result.data.error) || "Something went wrong.");
+          }
+          form.classList.add("is--hidden");
+          if (done) {
+            done.classList.add("is--visible");
+            if (animOk) {
+              gsap.fromTo(done, { y: 18, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8, ease: "power3.out" });
+            }
+          }
+        })
+        .catch(function (err) {
+          setSending(false);
+          showError(
+            (err && err.message ? err.message + " " : "") +
+            "Please try again, or email sapehiaofficial@gmail.com directly."
+          );
+        });
     });
   }
 

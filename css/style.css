@@ -996,7 +996,35 @@ body.menu-open .nav-mobile__link:nth-child(6) { transition-delay: .45s; }
 }
 .contact-form__done-alt { margin-top: 1.4em; font-size: .85em; color: var(--ivory-40); }
 .contact-form.is--hidden { display: none; }
-.contact-form.is--hidden + .contact-form__done + .contact-form__alt { display: none; }
+.contact-form.is--hidden ~ .contact-form__alt,
+.contact-form.is--hidden ~ .contact-form__error { display: none; }
+
+/* Honeypot — kept in the layout but hidden from humans and assistive tech. */
+.contact-form__hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Inline submit error */
+.contact-form__error {
+  display: none;
+  margin-top: 1.1em;
+  padding: .85em 1.1em;
+  font-size: .82em;
+  line-height: 1.5;
+  color: var(--ivory);
+  background: rgba(160, 64, 52, .14);
+  border: 1px solid rgba(190, 96, 80, .42);
+  border-radius: 8px;
+}
+.contact-form__error.is--visible { display: block; }
+
+/* Sending state */
+.contact-form.is--sending { opacity: .7; pointer-events: none; }
+.contact-form__submit:disabled { cursor: progress; }
 
 /* ============================================================
    RESPONSIVE

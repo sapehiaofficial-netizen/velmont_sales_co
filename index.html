@@ -867,7 +867,11 @@
           <h3 class="contact-modal__card-title">Book a Call</h3>
           <p class="contact-modal__card-sub">We respond within one business day.</p>
 
-          <form class="contact-form">
+          <form class="contact-form" novalidate>
+            <div class="contact-form__hp" aria-hidden="true">
+              <label for="cf-company-website">Company website</label>
+              <input id="cf-company-website" name="company_website" type="text" tabindex="-1" autocomplete="off"/>
+            </div>
             <div class="contact-form__field">
               <label for="cf-name">Full name</label>
               <input id="cf-name" name="name" type="text" required autocomplete="name" placeholder="Priya Sharma"/>
@@ -897,10 +901,12 @@
             </button>
           </form>
 
+          <p class="contact-form__error" role="alert" aria-live="assertive"></p>
+
           <div class="contact-form__done" role="status">
-            <p class="contact-form__done-title">Almost there &mdash;</p>
-            <p>Your email app just opened with everything pre-filled. Hit send, and you&rsquo;ll hear from us within one business day.</p>
-            <p class="contact-form__done-alt">Didn&rsquo;t open? Write to <a href="mailto:sapehiaofficial@gmail.com">sapehiaofficial@gmail.com</a></p>
+            <p class="contact-form__done-title">You&rsquo;re on our desk &mdash;</p>
+            <p>Thanks. Your details just landed in our inbox, and you&rsquo;ll hear from a real person within one business day.</p>
+            <p class="contact-form__done-alt">Need us sooner? Write to <a href="mailto:sapehiaofficial@gmail.com">sapehiaofficial@gmail.com</a></p>
           </div>
 
           <p class="contact-form__alt">Prefer email? <a href="mailto:sapehiaofficial@gmail.com">sapehiaofficial@gmail.com</a></p>
