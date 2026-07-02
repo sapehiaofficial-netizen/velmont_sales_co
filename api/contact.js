@@ -7,13 +7,17 @@
 // Optional env vars (sane defaults below):
 //   CONTACT_TO_EMAIL   — where leads are delivered   (default: sapehiaofficial@gmail.com)
 //   CONTACT_FROM_EMAIL — sender; must be a Resend-verified domain.
-//                        Defaults to onboarding@resend.dev (works to the account
-//                        owner with no domain setup). Once velmontassociates.in is
-//                        verified in Resend, set this to
-//                        "Velmont Associates <noreply@velmontassociates.in>".
+//
+// The default sender is the VERIFIED branded domain (noreply@velmontassociates.in),
+// NOT the resend.dev sandbox. The sandbox address (onboarding@resend.dev) was the
+// cause of leads silently landing in Gmail spam / being dropped: Gmail distrusts
+// Resend's shared sandbox domain. velmontassociates.in has full DKIM + SPF + DMARC
+// set up in DNS, so mail from it passes alignment and reaches the inbox reliably.
+// This is hardcoded (not an env var) on purpose, so a redeploy can never silently
+// revert to the sandbox sender.
 
 const TO_EMAIL = process.env.CONTACT_TO_EMAIL || "sapehiaofficial@gmail.com";
-const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || "Velmont Associates <onboarding@resend.dev>";
+const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || "Velmont Associates <noreply@velmontassociates.in>";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
